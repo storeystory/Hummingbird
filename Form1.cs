@@ -13,63 +13,71 @@ namespace Hummingbird
 {
     public partial class frmMain : Form
     {
-        String name = "";
         String path = Environment.CurrentDirectory;
 
         int charsTyped = 0;
         int autosaveInterval = 50;
 
-        int newBoxX = 12;
-        int newBoxY = 144;
+        int newBoxX = 6;
+        int newBoxY = 30;
         int twtrLimit = 280;
         TextBox newTweet;
         List<TextBox> tweetList = new List<TextBox>();
 
-        public frmMain() => InitializeComponent();
+        public const int WM_NCLBUTTONDOWN = 0xA1;
+        public const int HT_CAPTION = 0x2;
 
-        private void frmMain_Load(object sender, EventArgs e)
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
+
+        public frmMain()
         {
-            AddBox();
+            InitializeComponent();
         }
 
         private void AddBox()
         {
             newTweet = new TextBox();
-           
-            newTweet.Width = 748;
-            newTweet.Height = 80;
+
+            newTweet.Width = 720;
+            newTweet.Height = 160;
+            newTweet.BackColor = Color.FromArgb(25, 39, 52);
             newTweet.Location = new Point(newBoxX, newBoxY);
             newTweet.Multiline = true;
-            
+
             newTweet.GotFocus += newTweet_Focus;
             newTweet.TextChanged += newTweet_TextChanged;
 
-            this.Controls.Add(newTweet);
+            pnlTwtBoxes.Controls.Add(newTweet);
             tweetList.Add(newTweet);
 
-            newBoxY += 86;
+            newBoxY += 166;
         }
 
         private void AddBox(String boxText)
         {
             newTweet = new TextBox();
-            newTweet.Width = 748;
-            newTweet.Height = 80;
+
+            newTweet.Width = 720;
+            newTweet.Height = 160;
             newTweet.Location = new Point(newBoxX, newBoxY);
             newTweet.Multiline = true;
+
             newTweet.Text = boxText;
             newTweet.TextChanged += newTweet_TextChanged;
 
-            this.Controls.Add(newTweet);
             tweetList.Add(newTweet);
+            pnlTwtBoxes.Controls.Add(newTweet);
 
-            newBoxY += 86;
+            newBoxY += 166;
         }
 
         public static Control FindFocusedControl(Control control)
         {
             var container = control as IContainerControl;
-            
+
             while (container != null)
             {
                 control = container.ActiveControl;
@@ -79,17 +87,23 @@ namespace Hummingbird
             return control;
         }
 
-        public void Open(String FileContents)
+        public void Open(String FileContents, String FileName)
         {
             Save();
+            lblAutosaveStatus.Text = "Opening...";
+            newBoxX = 6;
+            newBoxY = 6;
+            charsTyped = 0;
 
-            Controls.Remove(newTweet);
+            pnlTwtBoxes.Controls.Clear();
 
+            boxName.Text = FileName;
             String currentTweet = "";
+            String path = Environment.CurrentDirectory;
 
             foreach (char c in FileContents)
             {
-                if(c != '^')
+                if (c != '^')
                 {
                     currentTweet += c;
                 }
@@ -97,55 +111,40 @@ namespace Hummingbird
                 {
                     AddBox(currentTweet);
                     currentTweet = "";
-                    FileContents = FileContents.TrimStart(currentTweet.ToCharArray());
                 }
             }
+
+            lblAutosaveStatus.Text = "Successfully imported.";
         }
 
         public void Save()
         {
             lblAutosaveStatus.Text = "Saving...";
-            String filename = "";
+            String filename = boxName.Text;
 
-            if (name.Equals(""))
+            if (filename.IndexOfAny(Path.GetInvalidFileNameChars()) > -1)
             {
-                filename = DateTime.Now.ToString();
+                MessageBox.Show("Invalid characters in filename");
             }
-
-            foreach (char c in filename)
+            else
             {
-                if(c == '/' || c == '\\' || c == '?' || c == '%' || c == '*' || c == ':' || c == '|' || c == '"' || c == '<' || c == '>')
+                try
                 {
-                    filename += "-";
-                }
-                else
-                {
-                    filename += c;
-                }
-            }
-
-            try
-            {
-                using (StreamWriter sr = new StreamWriter(path + "\\" + filename + ".txt"))
-                {
-                    foreach (var tweet in tweetList)
+                    using (StreamWriter sr = new StreamWriter(path + "\\" + filename + ".txt"))
                     {
-                        sr.WriteLine(tweet.Text);
-                        sr.WriteLine("^");
+                        foreach (var tweet in tweetList)
+                        {
+                            sr.Write(tweet.Text + "^");
+                        }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Sorry, an error occured: " + ex.Message);
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Sorry, an error occured: " + ex.Message);
+                }
             }
 
             lblAutosaveStatus.Text = "Saved: " + DateTime.Now.ToString();
-        }
-
-        private void boxName_TextChanged(object sender, EventArgs e)
-        {
-            name = boxName.Text;
         }
 
         private void newTweet_Focus(object sender, EventArgs e)
@@ -177,13 +176,36 @@ namespace Hummingbird
 
         private void strpBtnImport_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
+            String PathString = e.ClickedItem.ToString();
             String FileCont;
-            using (StreamReader sr = new StreamReader(e.ClickedItem.ToString()))
+
+            List<char> PathStringReversed = PathString.ToCharArray().ToList();
+            PathStringReversed.Reverse();
+
+            String FileNameReversed = "";
+
+            foreach (char c in PathStringReversed)
+            {
+                if (c != '\\')
+                {
+                    FileNameReversed += c;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            char[] FileNameArray = FileNameReversed.ToCharArray();
+            Array.Reverse(FileNameArray);
+            String FileName = new string(FileNameArray);
+
+            using (StreamReader sr = new StreamReader(PathString))
             {
                 FileCont = sr.ReadToEnd();
             }
-             
-            Open(FileCont);
+
+            Open(FileCont, FileName);
         }
 
         private void strpBtnImport_Click(object sender, EventArgs e)
@@ -199,6 +221,51 @@ namespace Hummingbird
         private void strpBtnImport_DropDownClosed(object sender, EventArgs e)
         {
             strpBtnImport.DropDownItems.Clear();
+        }
+
+        private void strpBtnExport_Click(object sender, EventArgs e)
+        {
+            Save();
+        }
+
+        private void strpBtnRemove_Click(object sender, EventArgs e)
+        {
+            pnlTwtBoxes.Controls.RemoveAt(pnlTwtBoxes.Controls.Count - 1);
+            newBoxY -= 166;
+        }
+
+        private void frmMain_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            }
+        }
+
+        private void frmMain_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape && tweetList.Count >= 1)
+            {
+                Save();
+                this.Dispose();
+                this.Close();
+            }
+        }
+
+        private void frmMain_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape && tweetList.Count >= 1)
+            {
+                Save();
+                this.Dispose();
+                this.Close();
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
