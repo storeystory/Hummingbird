@@ -32,6 +32,7 @@
             this.btmStrp = new System.Windows.Forms.StatusStrip();
             this.lblAutosaveStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblChars = new System.Windows.Forms.ToolStripStatusLabel();
+            this.btmStrpLblNumTweets = new System.Windows.Forms.ToolStripStatusLabel();
             this.topStrp = new System.Windows.Forms.ToolStrip();
             this.strpBtnAddTweet = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -46,7 +47,7 @@
             this.lblTweets = new System.Windows.Forms.Label();
             this.pnlTwtBoxes = new System.Windows.Forms.Panel();
             this.btnClose = new System.Windows.Forms.Button();
-            this.btmStrpLblNumTweets = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblESCHint = new System.Windows.Forms.Label();
             this.btmStrp.SuspendLayout();
             this.topStrp.SuspendLayout();
             this.pnlTwtBoxes.SuspendLayout();
@@ -78,6 +79,12 @@
             this.lblChars.Name = "lblChars";
             this.lblChars.Size = new System.Drawing.Size(98, 17);
             this.lblChars.Text = "Characters: x/280";
+            // 
+            // btmStrpLblNumTweets
+            // 
+            this.btmStrpLblNumTweets.Name = "btmStrpLblNumTweets";
+            this.btmStrpLblNumTweets.Size = new System.Drawing.Size(115, 17);
+            this.btmStrpLblNumTweets.Text = "Number of Tweets: 0";
             // 
             // topStrp
             // 
@@ -216,11 +223,14 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.button1_Click);
             // 
-            // btmStrpLblNumTweets
+            // lblESCHint
             // 
-            this.btmStrpLblNumTweets.Name = "btmStrpLblNumTweets";
-            this.btmStrpLblNumTweets.Size = new System.Drawing.Size(115, 17);
-            this.btmStrpLblNumTweets.Text = "Number of Tweets: 0";
+            this.lblESCHint.AutoSize = true;
+            this.lblESCHint.Location = new System.Drawing.Point(685, 9);
+            this.lblESCHint.Name = "lblESCHint";
+            this.lblESCHint.Size = new System.Drawing.Size(101, 15);
+            this.lblESCHint.TabIndex = 8;
+            this.lblESCHint.Text = "Press ESC to close";
             // 
             // frmMain
             // 
@@ -230,6 +240,7 @@
             this.BackColor = System.Drawing.Color.Black;
             this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(797, 1012);
+            this.Controls.Add(this.lblESCHint);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.pnlTwtBoxes);
             this.Controls.Add(this.lblName);
@@ -280,5 +291,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.ToolStripStatusLabel btmStrpLblNumTweets;
+        private System.Windows.Forms.Label lblESCHint;
     }
 }

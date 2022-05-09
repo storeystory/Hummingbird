@@ -76,6 +76,7 @@ namespace Hummingbird
 
             pnlTwtBoxes.Controls.Add(newTweet);
             tweetList.Add(newTweet);
+            pnlTwtBoxes.Controls.Add(newTweet);
 
             btmStrpLblNumTweets.Text = "Number of Tweets: " + tweetList.Count;
 
@@ -283,6 +284,11 @@ namespace Hummingbird
 
         private void button1_Click(object sender, EventArgs e)
         {
+            if(tweetList.Count != 0)
+            {
+                Save();
+            }
+            
             this.Close();
         }
 
