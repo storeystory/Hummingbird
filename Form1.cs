@@ -218,6 +218,7 @@ namespace Hummingbird
             char[] FileNameArray = FileNameReversed.ToCharArray();
             Array.Reverse(FileNameArray);
             String FileName = new string(FileNameArray);
+            FileName = FileName.Remove(FileName.Length - 4, 4);
 
             using (StreamReader sr = new StreamReader(PathString))
             {
@@ -290,11 +291,6 @@ namespace Hummingbird
             }
             
             this.Close();
-        }
-
-        private void frmMain_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

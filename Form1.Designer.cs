@@ -256,7 +256,6 @@
             this.Name = "frmMain";
             this.Opacity = 0.85D;
             this.Text = "Hummingbird - A Twitter writing app";
-            this.Load += new System.EventHandler(this.frmMain_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMain_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.frmMain_KeyUp);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.frmMain_MouseDown);
