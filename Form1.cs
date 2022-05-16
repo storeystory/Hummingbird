@@ -41,7 +41,7 @@ namespace Hummingbird
         {
             newTweet = new TextBox();
 
-            newTweet.Width = 720;
+            newTweet.Width = pnlTwtBoxes.Width - 20;
             newTweet.Height = 160;
             newTweet.BackColor = Color.FromArgb(25, 39, 52);
             newTweet.Location = new Point(newBoxX, newBoxY);
@@ -63,7 +63,7 @@ namespace Hummingbird
         {
             newTweet = new TextBox();
 
-            newTweet.Width = 720;
+            newTweet.Width = pnlTwtBoxes.Width - 20;
             newTweet.Height = 160;
             newTweet.BackColor = Color.FromArgb(25, 39, 52);
             newTweet.Location = new Point(newBoxX, newBoxY);
@@ -164,6 +164,21 @@ namespace Hummingbird
             }
 
             lblAutosaveStatus.Text = "Saved: " + DateTime.Now.ToString();
+        }
+
+        private void frmMain_Load(object sender, EventArgs e)
+        {
+            Rectangle screenSize = Screen.FromControl(this).WorkingArea;
+
+            this.Width = (int)(screenSize.Width * 0.5);
+            this.Height = (int)(screenSize.Height);
+
+            boxName.Width = this.Width - 30;
+
+            pnlTwtBoxes.Width = this.Width - 30;
+            pnlTwtBoxes.Height = this.Height - 175;
+
+            lblESCHint.Location = new Point(this.Width - 198, 18);
         }
 
         private void newTweet_Focus(object sender, EventArgs e)
