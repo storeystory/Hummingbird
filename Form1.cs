@@ -41,7 +41,7 @@ namespace Hummingbird
         {
             newTweet = new TextBox();
 
-            newTweet.Width = pnlTwtBoxes.Width - 20;
+            newTweet.Width = pnlTwtBoxes.Width - 40;
             newTweet.Height = 160;
             newTweet.BackColor = Color.FromArgb(25, 39, 52);
             newTweet.Location = new Point(newBoxX, newBoxY);
@@ -63,7 +63,7 @@ namespace Hummingbird
         {
             newTweet = new TextBox();
 
-            newTweet.Width = pnlTwtBoxes.Width - 20;
+            newTweet.Width = pnlTwtBoxes.Width - 40;
             newTweet.Height = 160;
             newTweet.BackColor = Color.FromArgb(25, 39, 52);
             newTweet.Location = new Point(newBoxX, newBoxY);
